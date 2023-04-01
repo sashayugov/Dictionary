@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.example.dictionary'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.example.dictionary"
         minSdk 26
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -48,6 +48,8 @@ dependencies {
 
 //    Glide
     implementation 'com.github.bumptech.glide:glide:4.15.1'
+
+    implementation 'androidx.fragment:fragment-ktx:1.5.6'
 
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'

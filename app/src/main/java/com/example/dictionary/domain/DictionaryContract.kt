@@ -3,12 +3,13 @@ package com.example.dictionary.domain
 interface DictionaryContract {
 
     interface View {
-        fun renderWordData()
+        fun openSearchFragment()
+        fun openWordsListFragment()
     }
 
     interface Presenter {
         fun attach(view: View)
-        fun loadDataByWord(word: String)
+        fun onLoadDataByWord(word: String)
         fun detach()
     }
 
