@@ -1,7 +1,8 @@
 package com.example.dictionary
 
 import android.app.Application
-import android.content.Context
+import com.example.dictionary.data.RepositoryImpl
+import com.example.dictionary.domain.DictionaryContract
 import com.example.dictionary.presenter.MainPresenter
 
 class App : Application() {
@@ -11,7 +12,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        mainPresenter = MainPresenter()
+        mainPresenter = MainPresenter(RepositoryImpl())
     }
 
     companion object {

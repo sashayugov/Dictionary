@@ -2,7 +2,8 @@ package com.example.dictionary.presenter
 
 import com.example.dictionary.domain.DictionaryContract
 
-class MainPresenter : DictionaryContract.Presenter {
+class MainPresenter(private val wordRepository: DictionaryContract.Repository) :
+    DictionaryContract.Presenter {
 
     private var activity: DictionaryContract.View? = null
 

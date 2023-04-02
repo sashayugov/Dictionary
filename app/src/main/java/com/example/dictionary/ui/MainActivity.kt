@@ -33,7 +33,6 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View {
         }
     }
 
-
     override fun onDestroy() {
         presenter.detach()
         super.onDestroy()
