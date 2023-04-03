@@ -5,24 +5,21 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.dictionary.App
 import com.example.dictionary.R
 import com.example.dictionary.databinding.FragmentWordListBinding
-
-private const val WORD = "WORD"
+import com.example.dictionary.domain.WordData
+import com.example.dictionary.ui.adapter.WordListAdapter
 
 class WordListFragment : Fragment() {
 
     private var _binding: FragmentWordListBinding? = null
     private val binding get() = _binding!!
 
-    private var word: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            word = it.getString(WORD)
-        }
-    }
+    private val presenter = App.instance.mainPresenter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,18 +29,38 @@ class WordListFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        renderData()
+    }
+
+    private fun renderData() {
+        val wordData = presenter.wordData
+        when(wordData) {
+            is WordData.Success -> {
+                setRecyclerView(wordData)
+            }
+            is WordData.Loading -> {
+
+            }
+            is WordData.Error -> {
+                Toast.makeText(requireContext(), "Error, something wrong", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun setRecyclerView(wordData: WordData.Success) {
+        binding.wordList.adapter = WordListAdapter(
+            wordItems = wordData.listDataModel,
+            onWordClickListener = {
+                Toast.makeText(requireContext(), it.text, Toast.LENGTH_LONG).show()
+            }
+        )
+        binding.wordList.layoutManager = LinearLayoutManager(requireContext())
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance(word: String) =
-            WordListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(WORD, word)
-                }
-            }
     }
 }

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.dictionary.App
 import com.example.dictionary.databinding.FragmentSearchWordBinding
+import com.example.dictionary.ui.adapter.WordListAdapter
 
 
 class SearchWordFragment : Fragment(){
@@ -27,7 +28,8 @@ class SearchWordFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.searchWordButton.setOnClickListener {
-            presenter.onLoadDataByWord("word")
+            val word: String = binding.inputWordEditText.text.toString()
+            presenter.onLoadDataByWord(word)
         }
     }
 

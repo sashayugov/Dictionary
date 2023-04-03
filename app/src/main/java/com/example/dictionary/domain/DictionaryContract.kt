@@ -4,14 +4,17 @@ interface DictionaryContract {
 
     interface View {
         fun openSearchFragment()
-        fun openWordsListFragment()
+        fun openWordListFragment()
     }
 
-    interface Presenter {
+    interface Presenter<T> {
+        val wordData: T
         fun attach(view: View)
         fun onLoadDataByWord(word: String)
         fun detach()
     }
 
-    interface Repository
+    interface Repository<T> {
+       val api: T
+    }
 }

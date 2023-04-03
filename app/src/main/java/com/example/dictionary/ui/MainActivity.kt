@@ -26,7 +26,10 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View {
         }
     }
 
-    override fun openWordsListFragment() {
+    override fun openWordListFragment() {
+        if (supportFragmentManager.findFragmentById(R.id.container) is WordListFragment) {
+            supportFragmentManager.popBackStack()
+        }
         supportFragmentManager.commit {
             addToBackStack(null)
             replace(R.id.container, WordListFragment())
