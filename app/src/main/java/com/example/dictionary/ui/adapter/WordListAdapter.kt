@@ -1,7 +1,5 @@
 package com.example.dictionary.ui.adapter
 
-import android.transition.ChangeBounds
-import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -31,7 +29,7 @@ class WordListAdapter(
 
     inner class ViewHolder(
         itemBinding: WordItemBinding,
-        onWordClickListener: (item: WordDataModel) -> Unit
+        private val onWordClickListener: ((item: WordDataModel) -> Unit)
     ) :
         RecyclerView.ViewHolder(itemBinding.root) {
 

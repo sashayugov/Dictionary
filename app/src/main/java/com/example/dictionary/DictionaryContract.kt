@@ -1,4 +1,4 @@
-package com.example.dictionary.domain
+package com.example.dictionary
 
 import io.reactivex.rxjava3.core.Single
 

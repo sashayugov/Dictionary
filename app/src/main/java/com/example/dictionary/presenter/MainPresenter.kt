@@ -1,6 +1,6 @@
 package com.example.dictionary.presenter
 
-import com.example.dictionary.domain.DictionaryContract
+import com.example.dictionary.DictionaryContract
 import com.example.dictionary.domain.WordData
 import com.example.dictionary.domain.entity.WordDataModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -24,11 +24,6 @@ class MainPresenter(
         activity?.renderData(wordData)
     }
 
-    override fun detach() {
-        activity = null
-        disposableWordsList?.dispose()
-    }
-
     override fun onLoadDataByWord(word: String) {
         disposableWordsList = wordRepository.getDataByWord(word)
             .subscribeOn(Schedulers.newThread())
@@ -46,5 +41,10 @@ class MainPresenter(
                     activity?.renderData(wordData as WordData.Error)
                 }
             )
+    }
+
+    override fun detach() {
+        activity = null
+        disposableWordsList?.dispose()
     }
 }

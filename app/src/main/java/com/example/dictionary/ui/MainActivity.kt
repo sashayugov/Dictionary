@@ -2,48 +2,37 @@ package com.example.dictionary.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.transition.ChangeBounds
 import android.transition.TransitionManager
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.window.OnBackInvokedDispatcher
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.example.dictionary.App
 import com.example.dictionary.R
 import com.example.dictionary.databinding.ActivityMainBinding
-import com.example.dictionary.domain.DictionaryContract
+import com.example.dictionary.DictionaryContract
 import com.example.dictionary.domain.WordData
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
 
     private lateinit var binding: ActivityMainBinding
+
     private val presenter = App.instance.mainPresenter
+    private lateinit var word: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         presenter.attach(this)
-
-        binding.searchWordButton.setOnClickListener {
-            val word: String = binding.inputWordEditText.text.toString()
-            presenter.onLoadDataByWord(word)
-            closeKeyboard()
-        }
-
-        onBackPressedDispatcher.addCallback(this) {
-            supportFragmentManager.popBackStack()
-            TransitionManager.beginDelayedTransition(binding.mainActivityContainer, ChangeBounds())
-            when (binding.container.visibility) {
-                GONE -> finish()
-                VISIBLE -> binding.container.visibility = GONE
-            }
-        }
+        initSearchButton()
+        initKeyboardSearchButton()
+        initBackPressedCallback()
     }
 
     override fun renderData(wordData: WordData?) {
@@ -84,6 +73,36 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
         }
     }
 
+    private fun initSearchButton() {
+        binding.searchWordButton.setOnClickListener {
+            word = binding.inputWordEditText.text.toString()
+            presenter.onLoadDataByWord(word)
+            closeKeyboard()
+        }
+    }
+
+    private fun initKeyboardSearchButton() {
+        binding.inputWordEditText.setOnEditorActionListener { _, actionId, _ ->
+            word = binding.inputWordEditText.text.toString()
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                presenter.onLoadDataByWord(word)
+                closeKeyboard()
+            }
+            true
+        }
+    }
+
+    private fun initBackPressedCallback() {
+        onBackPressedDispatcher.addCallback(this) {
+            supportFragmentManager.popBackStack()
+            TransitionManager.beginDelayedTransition(binding.mainActivityContainer)
+            when (binding.container.visibility) {
+                GONE -> finish()
+                VISIBLE -> binding.container.visibility = GONE
+            }
+        }
+    }
+
     private fun closeKeyboard() {
         val view: View? = this.currentFocus
         if (view != null) {
@@ -93,7 +112,7 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
     }
 
     private fun moveSearchField() {
-        TransitionManager.beginDelayedTransition(binding.mainActivityContainer, ChangeBounds())
+        TransitionManager.beginDelayedTransition(binding.mainActivityContainer)
         if (binding.container.visibility == GONE) binding.container.visibility = VISIBLE
     }
 

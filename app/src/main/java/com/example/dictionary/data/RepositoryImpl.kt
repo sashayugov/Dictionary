@@ -1,7 +1,7 @@
 package com.example.dictionary.data
 
 import com.example.dictionary.data.retrofit.SkyEngApiService
-import com.example.dictionary.domain.DictionaryContract
+import com.example.dictionary.DictionaryContract
 import com.example.dictionary.domain.entity.WordDataModel
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import io.reactivex.rxjava3.core.Single
