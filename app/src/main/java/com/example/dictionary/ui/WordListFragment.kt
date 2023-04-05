@@ -1,15 +1,15 @@
 package com.example.dictionary.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.transition.ChangeBounds
+import android.transition.Slide
+import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.dictionary.App
-import com.example.dictionary.R
 import com.example.dictionary.databinding.FragmentWordListBinding
 import com.example.dictionary.domain.WordData
 import com.example.dictionary.ui.adapter.WordListAdapter
@@ -31,29 +31,15 @@ class WordListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        renderData()
+        setRecyclerView()
     }
 
-    private fun renderData() {
-        val wordData = presenter.wordData
-        when(wordData) {
-            is WordData.Success -> {
-                setRecyclerView(wordData)
-            }
-            is WordData.Loading -> {
-
-            }
-            is WordData.Error -> {
-                Toast.makeText(requireContext(), "Error, something wrong", Toast.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    private fun setRecyclerView(wordData: WordData.Success) {
+    private fun setRecyclerView() {
+        binding.wordList.hasFixedSize()
         binding.wordList.adapter = WordListAdapter(
-            wordItems = wordData.listDataModel,
+            wordItems = (presenter.wordData as WordData.Success).listDataModel,
             onWordClickListener = {
-                Toast.makeText(requireContext(), it.text, Toast.LENGTH_LONG).show()
+                TransitionManager.beginDelayedTransition(binding.wordList)
             }
         )
         binding.wordList.layoutManager = LinearLayoutManager(requireContext())

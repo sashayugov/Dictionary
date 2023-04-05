@@ -1,21 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:orientation="vertical"
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/word_item_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:textSize="30sp"
-        tools:text="word"/>
+        tools:text="word" />
+
+    <TextView
+        android:id="@+id/word_translate_item_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textStyle="italic"
+        tools:text="translate" />
+
+    <LinearLayout
+        android:id="@+id/details_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/word_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:textStyle="italic"
+            android:visibility="gone"
+            tools:text="some note"
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/image_meaning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="8dp"
+            android:visibility="gone"
+            tools:srcCompat="@android:drawable/ic_menu_gallery"
+            tools:visibility="visible" />
+
+    </LinearLayout>
 
     <View
+        android:id="@+id/custom_line_view"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:backgroundTint="@color/grey"/>
+        android:background="@color/grey" />
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+</LinearLayout>

@@ -1,8 +1,13 @@
 package com.example.dictionary.ui.adapter
 
+import android.transition.ChangeBounds
+import android.transition.TransitionManager
 import android.view.LayoutInflater
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.example.dictionary.databinding.WordItemBinding
 import com.example.dictionary.domain.entity.WordDataModel
 
@@ -26,15 +31,33 @@ class WordListAdapter(
 
     inner class ViewHolder(
         itemBinding: WordItemBinding,
-        private val onWordClickListener: (item: WordDataModel) -> Unit
-    ) : RecyclerView.ViewHolder(itemBinding.root) {
+        onWordClickListener: (item: WordDataModel) -> Unit
+    ) :
+        RecyclerView.ViewHolder(itemBinding.root) {
 
         private val word = itemBinding.wordItemTv
+        private val wordTranslate = itemBinding.wordTranslateItemTv
+        private val wordNote = itemBinding.wordNote
+        private val imageMeaning = itemBinding.imageMeaning
+
         fun bind(wordDataModel: WordDataModel) {
             word.text = wordDataModel.text
-            itemView.setOnClickListener { onWordClickListener(wordDataModel) }
+            wordTranslate.text = wordDataModel.meanings[0].translation.text
+            wordNote.text = wordDataModel.meanings[0].translation.note
+            imageMeaning.load("https:" + wordDataModel.meanings[0].imageUrl) {
+                placeholder(android.R.drawable.ic_menu_gallery)
+                error(android.R.drawable.ic_menu_report_image)
+            }
+
+            itemView.setOnClickListener {
+                if (imageMeaning.visibility == GONE) imageMeaning.visibility = VISIBLE
+                else imageMeaning.visibility = GONE
+
+                if (wordNote.visibility == GONE) wordNote.visibility = VISIBLE
+                else wordNote.visibility = GONE
+
+                onWordClickListener(wordDataModel)
+            }
         }
     }
-
-
 }

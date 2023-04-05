@@ -1,4 +1,4 @@
-package com.example.dictionary.data
+package com.example.dictionary.data.retrofit
 
 import com.example.dictionary.domain.WordData
 import com.example.dictionary.domain.entity.WordDataModel
