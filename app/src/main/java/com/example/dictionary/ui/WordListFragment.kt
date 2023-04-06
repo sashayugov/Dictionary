@@ -1,8 +1,6 @@
 package com.example.dictionary.ui
 
 import android.os.Bundle
-import android.transition.ChangeBounds
-import android.transition.Slide
 import android.transition.TransitionManager
 import android.view.LayoutInflater
 import android.view.View

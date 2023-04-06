@@ -7,15 +7,14 @@ import android.transition.TransitionManager
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
 import com.example.dictionary.App
+import com.example.dictionary.DictionaryContract
 import com.example.dictionary.R
 import com.example.dictionary.databinding.ActivityMainBinding
-import com.example.dictionary.DictionaryContract
 import com.example.dictionary.domain.WordData
 import com.google.android.material.snackbar.Snackbar
 

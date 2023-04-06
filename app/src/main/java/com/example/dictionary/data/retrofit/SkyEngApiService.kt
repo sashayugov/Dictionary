@@ -1,6 +1,5 @@
 package com.example.dictionary.data.retrofit
 
-import com.example.dictionary.domain.WordData
 import com.example.dictionary.domain.entity.WordDataModel
 import io.reactivex.rxjava3.core.Single
 import retrofit2.http.GET
