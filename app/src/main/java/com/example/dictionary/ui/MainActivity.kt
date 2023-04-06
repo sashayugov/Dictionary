@@ -2,6 +2,7 @@ package com.example.dictionary.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.transition.ChangeBounds
 import android.transition.TransitionManager
 import android.view.View
 import android.view.View.GONE
@@ -52,7 +53,6 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
     }
 
     private fun openWordListFragment() {
-        moveSearchField()
         supportFragmentManager.commit {
             setCustomAnimations(
                 R.anim.slide_in,
@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
             )
             replace(R.id.container, WordListFragment())
         }
+        moveSearchField()
     }
 
     private fun showErrorMessage() {
@@ -67,10 +68,10 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
     }
 
     private fun openLoadingFragment() {
-        moveSearchField()
         supportFragmentManager.commit {
             replace(R.id.container, LoadingFragment())
         }
+        moveSearchField()
     }
 
     private fun initSearchButton() {
@@ -82,20 +83,20 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
     }
 
     private fun initKeyboardSearchButton() {
-        binding.inputWordEditText.setOnEditorActionListener { _, actionId, _ ->
+        binding.inputWordEditText.setOnEditorActionListener { _, _, _ ->
             word = binding.inputWordEditText.text.toString()
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                presenter.onLoadDataByWord(word)
-                closeKeyboard()
-            }
+            presenter.onLoadDataByWord(word)
+            closeKeyboard()
             true
         }
     }
 
     private fun initBackPressedCallback() {
         onBackPressedDispatcher.addCallback(this) {
-            supportFragmentManager.popBackStack()
-            TransitionManager.beginDelayedTransition(binding.mainActivityContainer)
+            supportFragmentManager.commit {
+                supportFragmentManager.findFragmentById(R.id.container)?.let { remove(it) }
+            }
+            TransitionManager.beginDelayedTransition(binding.mainActivityContainer, ChangeBounds())
             when (binding.container.visibility) {
                 GONE -> finish()
                 VISIBLE -> binding.container.visibility = GONE
@@ -112,7 +113,7 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
     }
 
     private fun moveSearchField() {
-        TransitionManager.beginDelayedTransition(binding.mainActivityContainer)
+        TransitionManager.beginDelayedTransition(binding.mainActivityContainer, ChangeBounds())
         if (binding.container.visibility == GONE) binding.container.visibility = VISIBLE
     }
 

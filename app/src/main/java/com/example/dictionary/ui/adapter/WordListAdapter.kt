@@ -14,6 +14,7 @@ class WordListAdapter(
     private val onWordClickListener: ((item: WordDataModel) -> Unit)
 ) : RecyclerView.Adapter<WordListAdapter.ViewHolder>() {
 
+    private var selectedItem: Int? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
@@ -23,9 +24,19 @@ class WordListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(wordItems[position])
+        checkHolder(holder, position)
+        selectedItem = null
     }
 
     override fun getItemCount(): Int = wordItems.size
+
+    private fun checkHolder(holder: ViewHolder, position: Int) {
+        if (selectedItem == position) {
+            holder.changeItemView(wordItems[position])
+        } else {
+            holder.notChangeItemView()
+        }
+    }
 
     inner class ViewHolder(
         itemBinding: WordItemBinding,
@@ -48,14 +59,24 @@ class WordListAdapter(
             }
 
             itemView.setOnClickListener {
-                if (imageMeaning.visibility == GONE) imageMeaning.visibility = VISIBLE
-                else imageMeaning.visibility = GONE
-
-                if (wordNote.visibility == GONE) wordNote.visibility = VISIBLE
-                else wordNote.visibility = GONE
-
-                onWordClickListener(wordDataModel)
+                selectedItem = if (selectedItem == null) adapterPosition
+                else null
+                changeItemView(wordDataModel)
             }
+        }
+
+        fun changeItemView(wordDataModel: WordDataModel) {
+            if (imageMeaning.visibility == GONE) imageMeaning.visibility = VISIBLE
+            else imageMeaning.visibility = GONE
+
+            if (wordNote.visibility == GONE) wordNote.visibility = VISIBLE
+            else wordNote.visibility = GONE
+            onWordClickListener(wordDataModel)
+        }
+
+        fun notChangeItemView() {
+            imageMeaning.visibility = GONE
+            wordNote.visibility = GONE
         }
     }
 }
