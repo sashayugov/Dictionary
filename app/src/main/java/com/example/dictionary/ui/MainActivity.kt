@@ -9,8 +9,10 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
+import androidx.lifecycle.MutableLiveData
 import com.example.dictionary.App
 import com.example.dictionary.DictionaryContract
 import com.example.dictionary.R
@@ -24,6 +26,7 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
 
     private val presenter = App.instance.mainPresenter
     private lateinit var word: String
+    private val viewModel by viewModels<MainActivityViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

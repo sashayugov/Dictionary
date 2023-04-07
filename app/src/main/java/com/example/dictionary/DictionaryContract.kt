@@ -1,5 +1,6 @@
 package com.example.dictionary
 
+import androidx.lifecycle.LiveData
 import io.reactivex.rxjava3.core.Single
 
 interface DictionaryContract {
@@ -12,6 +13,10 @@ interface DictionaryContract {
         fun attach(view: View<T>)
         fun onLoadDataByWord(word: String)
         fun detach()
+    }
+
+    interface ViewModel<T> {
+        fun onLoadDataByWord(word: String)
     }
 
     interface Repository<T> {
