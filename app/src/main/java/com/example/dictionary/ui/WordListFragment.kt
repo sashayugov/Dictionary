@@ -6,18 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dictionary.App
 import com.example.dictionary.databinding.FragmentWordListBinding
 import com.example.dictionary.domain.WordData
 import com.example.dictionary.ui.adapter.WordListAdapter
+import com.example.dictionary.ui.viewmodel.MainActivityViewModel
 
 class WordListFragment : Fragment() {
 
     private var _binding: FragmentWordListBinding? = null
     private val binding get() = _binding!!
 
-    private val presenter = App.instance.mainPresenter
+    private val viewModel by activityViewModels<MainActivityViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,14 +35,17 @@ class WordListFragment : Fragment() {
     }
 
     private fun setRecyclerView() {
-        binding.wordList.hasFixedSize()
-        binding.wordList.adapter = WordListAdapter(
-            wordItems = (presenter.wordData as WordData.Success).listDataModel,
-            onWordClickListener = {
-                TransitionManager.beginDelayedTransition(binding.wordList)
-            }
-        )
-        binding.wordList.layoutManager = LinearLayoutManager(requireContext())
+        viewModel.liveWordData.observe(viewLifecycleOwner) { wordData ->
+            binding.wordList.hasFixedSize()
+            binding.wordList.adapter = WordListAdapter(
+                wordItems = (wordData as WordData.Success).listDataModel,
+                onWordClickListener = {
+                    TransitionManager.beginDelayedTransition(binding.wordList)
+                }
+            )
+            binding.wordList.layoutManager = LinearLayoutManager(requireContext())
+        }
+
     }
 
     override fun onDestroyView() {

@@ -2,16 +2,15 @@ package com.example.dictionary
 
 import android.app.Application
 import com.example.dictionary.data.RepositoryImpl
-import com.example.dictionary.presenter.MainPresenter
 
 class App : Application() {
 
-    lateinit var mainPresenter: MainPresenter
+    lateinit var repo: RepositoryImpl
 
     override fun onCreate() {
         super.onCreate()
         instance = this
-        mainPresenter = MainPresenter(RepositoryImpl())
+        repo = RepositoryImpl()
     }
 
     companion object {

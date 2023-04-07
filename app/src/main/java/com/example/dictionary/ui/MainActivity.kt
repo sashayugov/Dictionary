@@ -12,34 +12,35 @@ import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commit
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.dictionary.App
 import com.example.dictionary.DictionaryContract
 import com.example.dictionary.R
 import com.example.dictionary.databinding.ActivityMainBinding
 import com.example.dictionary.domain.WordData
+import com.example.dictionary.ui.viewmodel.Factory
+import com.example.dictionary.ui.viewmodel.MainActivityViewModel
 import com.google.android.material.snackbar.Snackbar
 
-class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
+class MainActivity : AppCompatActivity(), DictionaryContract.View {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val presenter = App.instance.mainPresenter
     private lateinit var word: String
-    private val viewModel by viewModels<MainActivityViewModel>()
+    private val viewModel by viewModels<MainActivityViewModel> { Factory(App.instance.repo) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        presenter.attach(this)
+        renderData()
         initSearchButton()
         initKeyboardSearchButton()
         initBackPressedCallback()
     }
 
-    override fun renderData(wordData: WordData?) {
-        if (wordData != null) {
+    override fun renderData() {
+        viewModel.liveWordData.observe(this) { wordData ->
             when (wordData) {
                 is WordData.Success -> {
                     openWordListFragment()
@@ -55,12 +56,14 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
     }
 
     private fun openWordListFragment() {
-        supportFragmentManager.commit {
-            setCustomAnimations(
-                R.anim.slide_in,
-                R.anim.fade_out
-            )
-            replace(R.id.container, WordListFragment())
+        if (supportFragmentManager.findFragmentById(R.id.container) !is WordListFragment) {
+            supportFragmentManager.commit {
+                setCustomAnimations(
+                    R.anim.slide_in,
+                    R.anim.fade_out
+                )
+                replace(R.id.container, WordListFragment())
+            }
         }
         moveSearchField()
     }
@@ -70,8 +73,10 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
     }
 
     private fun openLoadingFragment() {
-        supportFragmentManager.commit {
-            replace(R.id.container, LoadingFragment())
+        if (supportFragmentManager.findFragmentById(R.id.container) !is LoadingFragment) {
+            supportFragmentManager.commit {
+                replace(R.id.container, LoadingFragment())
+            }
         }
         moveSearchField()
     }
@@ -79,7 +84,7 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
     private fun initSearchButton() {
         binding.searchWordButton.setOnClickListener {
             word = binding.inputWordEditText.text.toString()
-            presenter.onLoadDataByWord(word)
+            viewModel.onLoadDataByWord(word)
             closeKeyboard()
         }
     }
@@ -87,7 +92,7 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
     private fun initKeyboardSearchButton() {
         binding.inputWordEditText.setOnEditorActionListener { _, _, _ ->
             word = binding.inputWordEditText.text.toString()
-            presenter.onLoadDataByWord(word)
+            viewModel.onLoadDataByWord(word)
             closeKeyboard()
             true
         }
@@ -117,10 +122,5 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View<WordData> {
     private fun moveSearchField() {
         TransitionManager.beginDelayedTransition(binding.mainActivityContainer, ChangeBounds())
         if (binding.container.visibility == GONE) binding.container.visibility = VISIBLE
-    }
-
-    override fun onDestroy() {
-        presenter.detach()
-        super.onDestroy()
     }
 }
