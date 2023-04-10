@@ -14,7 +14,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 class MainActivityViewModel(
     private val wordRepository: DictionaryContract.Repository<List<WordDataModel>>,
 ) : ViewModel(),
-    DictionaryContract.ViewModel<WordData> {
+    DictionaryContract.ViewModel {
 
     private val _liveWordData: MutableLiveData<WordData> = MutableLiveData()
     val liveWordData: LiveData<WordData> = _liveWordData
@@ -24,7 +24,7 @@ class MainActivityViewModel(
         disposableWordsList = wordRepository.getDataByWord(word)
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { _liveWordData.value = WordData.Loading(0) }
+            .doOnSubscribe { _liveWordData.value = WordData.Loading(null) }
             .subscribeBy(
                 onSuccess = { listDataModel ->
                     _liveWordData.value = WordData.Success(listDataModel)

@@ -8,6 +8,6 @@ sealed class WordData {
 
     data class Error(val error: Throwable) : WordData()
 
-    data class Loading(val progress: Int) : WordData()
+    data class Loading(val progress: Int?) : WordData()
 }
 

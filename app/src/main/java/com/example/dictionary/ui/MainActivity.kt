@@ -11,13 +11,12 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commit
-import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dictionary.App
 import com.example.dictionary.DictionaryContract
-import com.example.dictionary.R
 import com.example.dictionary.databinding.ActivityMainBinding
 import com.example.dictionary.domain.WordData
+import com.example.dictionary.ui.adapter.WordListAdapter
 import com.example.dictionary.ui.viewmodel.Factory
 import com.example.dictionary.ui.viewmodel.MainActivityViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -41,44 +40,42 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View {
 
     override fun renderData() {
         viewModel.liveWordData.observe(this) { wordData ->
-            when (wordData) {
-                is WordData.Success -> {
-                    openWordListFragment()
-                }
-                is WordData.Error -> {
-                    showErrorMessage()
-                }
-                is WordData.Loading -> {
-                    openLoadingFragment()
+            if (wordData != null) {
+                when (wordData) {
+                    is WordData.Success -> {
+                        moveSearchField()
+                        binding.wordList.visibility = VISIBLE
+                        binding.progressBar.visibility = GONE
+                        setRecyclerView(wordData)
+                    }
+                    is WordData.Error -> {
+                        showErrorMessage()
+                    }
+                    is WordData.Loading -> {
+                        moveSearchField()
+                        binding.wordList.visibility = GONE
+                        binding.progressBar.visibility = VISIBLE
+                    }
                 }
             }
         }
     }
 
-    private fun openWordListFragment() {
-        if (supportFragmentManager.findFragmentById(R.id.container) !is WordListFragment) {
-            supportFragmentManager.commit {
-                setCustomAnimations(
-                    R.anim.slide_in,
-                    R.anim.fade_out
-                )
-                replace(R.id.container, WordListFragment())
+    private fun setRecyclerView(wordData: WordData.Success) {
+        binding.wordList.hasFixedSize()
+        binding.wordList.adapter = WordListAdapter(
+            wordItems = wordData.listDataModel,
+            onWordClickListener = {
+                TransitionManager.beginDelayedTransition(binding.wordList)
             }
-        }
-        moveSearchField()
+        )
+        TransitionManager.beginDelayedTransition(binding.wordListContainer, ChangeBounds())
+        binding.wordList.layoutManager = LinearLayoutManager(this)
     }
 
     private fun showErrorMessage() {
-        Snackbar.make(binding.container, "Error, something wrong", Snackbar.LENGTH_LONG).show()
-    }
-
-    private fun openLoadingFragment() {
-        if (supportFragmentManager.findFragmentById(R.id.container) !is LoadingFragment) {
-            supportFragmentManager.commit {
-                replace(R.id.container, LoadingFragment())
-            }
-        }
-        moveSearchField()
+        Snackbar.make(binding.mainActivityContainer, "Error, something wrong", Snackbar.LENGTH_LONG)
+            .show()
     }
 
     private fun initSearchButton() {
@@ -100,13 +97,10 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View {
 
     private fun initBackPressedCallback() {
         onBackPressedDispatcher.addCallback(this) {
-            supportFragmentManager.commit {
-                supportFragmentManager.findFragmentById(R.id.container)?.let { remove(it) }
-            }
             TransitionManager.beginDelayedTransition(binding.mainActivityContainer, ChangeBounds())
-            when (binding.container.visibility) {
+            when (binding.wordListContainer.visibility) {
                 GONE -> finish()
-                VISIBLE -> binding.container.visibility = GONE
+                VISIBLE -> binding.wordListContainer.visibility = GONE
             }
         }
     }
@@ -121,6 +115,8 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View {
 
     private fun moveSearchField() {
         TransitionManager.beginDelayedTransition(binding.mainActivityContainer, ChangeBounds())
-        if (binding.container.visibility == GONE) binding.container.visibility = VISIBLE
+        binding.wordList.scheduleLayoutAnimation()
+        if (binding.wordListContainer.visibility == GONE) binding.wordListContainer.visibility =
+            VISIBLE
     }
 }

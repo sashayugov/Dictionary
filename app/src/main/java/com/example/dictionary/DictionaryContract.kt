@@ -9,7 +9,7 @@ interface DictionaryContract {
         fun renderData()
     }
 
-    interface ViewModel<T> {
+    interface ViewModel {
         fun onLoadDataByWord(word: String)
     }
 
