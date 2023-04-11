@@ -12,7 +12,7 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class MainActivityViewModel(
-    private val wordRepository: DictionaryContract.Repository<List<WordDataModel>>,
+    private val wordRepository: DictionaryContract.Repository,
 ) : ViewModel(),
     DictionaryContract.ViewModel {
 

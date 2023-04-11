@@ -1,20 +1,19 @@
 package com.example.dictionary
 
 import android.app.Application
-import com.example.dictionary.data.RepositoryImpl
+import android.content.Context
+import com.example.dictionary.di.AppComponent
+import com.example.dictionary.di.DaggerAppComponent
 
 class App : Application() {
 
-    lateinit var repo: RepositoryImpl
+    lateinit var appComponent: AppComponent
 
     override fun onCreate() {
+        appComponent = DaggerAppComponent.create()
         super.onCreate()
-        instance = this
-        repo = RepositoryImpl()
-    }
-
-    companion object {
-        lateinit var instance: App
-        private set
     }
 }
+
+val Context.app
+    get() = applicationContext as App

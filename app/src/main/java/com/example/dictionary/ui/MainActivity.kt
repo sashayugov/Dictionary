@@ -14,24 +14,30 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dictionary.App
 import com.example.dictionary.DictionaryContract
+import com.example.dictionary.app
 import com.example.dictionary.databinding.ActivityMainBinding
 import com.example.dictionary.domain.WordData
 import com.example.dictionary.ui.adapter.WordListAdapter
 import com.example.dictionary.ui.viewmodel.Factory
 import com.example.dictionary.ui.viewmodel.MainActivityViewModel
 import com.google.android.material.snackbar.Snackbar
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), DictionaryContract.View {
 
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var word: String
-    private val viewModel by viewModels<MainActivityViewModel> { Factory(App.instance.repo) }
+
+    @Inject
+    lateinit var factory: Factory
+    private val viewModel by viewModels<MainActivityViewModel> { factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        this.app.appComponent.inject(this)
         renderData()
         initSearchButton()
         initKeyboardSearchButton()
