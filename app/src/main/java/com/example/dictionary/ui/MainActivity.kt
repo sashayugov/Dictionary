@@ -75,7 +75,6 @@ class MainActivity : AppCompatActivity(), DictionaryContract.View {
                 TransitionManager.beginDelayedTransition(binding.wordList)
             }
         )
-        TransitionManager.beginDelayedTransition(binding.wordListContainer, ChangeBounds())
         binding.wordList.layoutManager = LinearLayoutManager(this)
     }
 
